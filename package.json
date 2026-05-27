@@ -1,7 +1,7 @@
 {
   "name": "buildcrew",
   "version": "1.0.0",
-  "description": "BuildCrew student hackathon team building web application",
+  "description": "BuildCrew full-stack student hackathon team building application",
   "private": true,
   "scripts": {
     "start": "node server.js",
@@ -11,7 +11,7 @@
     "students",
     "hackathons",
     "teams",
-    "frontend"
+    "full-stack"
   ],
   "author": "",
   "license": "MIT"

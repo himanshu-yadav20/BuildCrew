@@ -1,6 +1,7 @@
 const http = require("http");
 const fs = require("fs");
 const path = require("path");
+const { handleApi } = require("./backend/api");
 
 const root = __dirname;
 const port = Number(process.env.PORT || 4173);
@@ -14,8 +15,19 @@ const types = {
   ".svg": "image/svg+xml"
 };
 
-const server = http.createServer((req, res) => {
-  const cleanUrl = decodeURIComponent(req.url.split("?")[0]);
+const server = http.createServer(async (req, res) => {
+  const url = new URL(req.url, `http://${req.headers.host || `${host}:${port}`}`);
+  const cleanUrl = decodeURIComponent(url.pathname);
+
+  if (cleanUrl.startsWith("/api/")) {
+    const handled = await handleApi(req, res, cleanUrl, url.searchParams);
+    if (!handled) {
+      res.writeHead(404, { "Content-Type": "application/json; charset=utf-8" });
+      res.end(JSON.stringify({ error: { message: "API route not found." } }));
+    }
+    return;
+  }
+
   const requested = cleanUrl === "/" ? "/index.html" : cleanUrl;
   const filePath = path.normalize(path.join(root, requested));
 
